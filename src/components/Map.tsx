@@ -1,16 +1,35 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import MapView, { Marker } from 'react-native-maps';
+import { useLocation } from '../hooks/UseLocation';
+import { LoadingScreen } from '../pages/LoadingScreen';
+import { Fab } from './Fab';
+
 
 export const Map = () => {
+    const { initialPosition, hasLocation, getCurrentLocation } = useLocation();
+
+    const mapViewRef = useRef<MapView>();
+
+    const currentPosition = async () => {
+        const { latitude, longitude } = await getCurrentLocation();
+        mapViewRef.current?.animateCamera({
+            center: { latitude, longitude }
+        });
+    }
+    if (!hasLocation) {
+        return <LoadingScreen />
+    }
+
     return (
         <>
             <MapView
+                ref={(el) => mapViewRef.current = el!}
                 style={{ flex: 1 }}
                 showsUserLocation
-                loadingEnabled 
+                // loadingEnabled 
                 initialRegion={{
-                    latitude: 14.6581329,
-                    longitude: -90.8606449,
+                    latitude: initialPosition.latitude,
+                    longitude: initialPosition.longitude,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}
@@ -29,7 +48,20 @@ export const Map = () => {
                     description={'marker.description'}
                 /> */}
 
+
+
             </MapView>
+            <Fab
+                iconName='compass-outline'
+                onPress={currentPosition}
+                style={
+                    {
+                        position: 'absolute',
+                        bottom: 20,
+                        right: 20
+                    }
+                }
+            />
 
         </>
     )
