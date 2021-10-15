@@ -18,10 +18,10 @@ export const PermissionScreen = () => {
                 onPress={askLocationPermission}
             />
 
-            <Text style={{ marginTop: 20 }}>
+            {/* <Text style={{ marginTop: 20 }}>
                 {JSON.stringify(permissions, null, 5)}
-            </Text>
-            
+            </Text> */}
+
         </View>
     )
 }
